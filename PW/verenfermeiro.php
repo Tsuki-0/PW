@@ -184,7 +184,7 @@
                     <a href="editar.php?id=<?= $idEnc?>">
                        <button type="button" class="btn btn-outline-primary">Editar</button>
                     </a>
-                    <a href="index.php"></a>
+                    <a href="index.php">
                         <button type="button" class="btn btn-outline-secondary">Voltar</button>
                     </a>
                 </div>
