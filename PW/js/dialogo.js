@@ -1,0 +1,27 @@
+function base64ToUtf8(b64) {
+    const binaryString = atob(b64);
+    const bytes = new Uint8Array(binaryString.length);
+    for (let i = 0; i < binaryString.length; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+    }
+    const decoder = new TextDecoder();
+    return decoder.decode(bytes);
+}
+
+const deleteModal = document.getElementById("excluirModal");
+
+deleteModal.addEventListener('show.bs.modal', (event) => {
+    const button = event.relatedTarget;
+    const modalBody  = deleteModal.querySelector(".modal-body");
+    const modalTitle = deleteModal.querySelector(".modal-title");
+    const confirmDelete = document.getElementById("confirmar");
+
+    // Lê o atributo data-enfermeiro (em vez de data-produto)
+    var idParaExcluir = button.getAttribute('data-enfermeiro');
+    // Decodifica o ID em base64 para exibir o valor real
+    var idParaExibir  = base64ToUtf8(button.getAttribute('data-enfermeiro'));
+
+    modalTitle.innerHTML = "Apagando Enfermeiro ID: " + idParaExibir;
+    modalBody.innerHTML  = "Deseja mesmo apagar o enfermeiro de ID " + idParaExibir + "?";
+    confirmDelete.setAttribute("href", "excluir.php?id=" + idParaExcluir);
+});

@@ -1,0 +1,357 @@
+* {
+    box-sizing: border-box;
+}
+
+/*estilo do body (acho q vou colocar no estilo geral)*/
+body {
+    background: var(--surface);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    color: var(--slate);
+    margin: 0;
+    min-height: 100vh;
+}
+
+
+/*Bordas da pagina("shell")*/
+.page-wrap {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 4rem;
+}
+
+/*"começo" do index*/
+.page-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1.75rem;
+}
+
+.page-header h1 {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--slate);
+    margin: 0;
+    line-height: 1.2;
+}
+
+.page-header p {
+    margin: .25rem 0 0;
+    font-size: .85rem;
+    color: var(--muted);
+}
+
+/* Botões iniciais */
+.toolbar {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.5rem;
+}
+
+/* Barra de pesquisa */
+.search-wrap {
+    display: flex;
+    align-items: center;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0 .75rem;
+    gap: .5rem;
+    flex: 1;
+    min-width: 220px;
+    max-width: 380px;
+    transition: border-color .15s, box-shadow .15s;
+}
+
+.search-wrap:focus-within {
+    border-color: var(--teal);
+    box-shadow: 0 0 0 3px rgba(13, 115, 119, .12);
+}
+
+.search-wrap svg {
+    color: var(--muted);
+    flex-shrink: 0;
+}
+
+.search-wrap input {
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: .875rem;
+    color: var(--slate);
+    width: 100%;
+    padding: .55rem 0;
+}
+
+.search-wrap input::placeholder {
+    color: #b0bec5;
+}
+
+.btn-search {
+    background: var(--teal);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: .55rem 1.1rem;
+    font-size: .875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background .15s, transform .1s;
+    white-space: nowrap;
+}
+
+.btn-search:hover {
+    background: var(--teal-light);
+}
+
+.btn-search:active {
+    transform: scale(.97);
+}
+
+/* Botão de adicionar enfermeiro */
+.btn-add {
+    display: inline-flex;
+    align-items: center;
+    gap: .4rem;
+    background: var(--teal);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: .55rem 1.2rem;
+    font-size: .875rem;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background .15s, box-shadow .15s;
+    margin-left: auto;
+}
+
+.btn-add:hover {
+    background: var(--teal-light);
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(13, 115, 119, .25);
+}
+
+/*Cards da tabela*/
+.table-card {
+    background: var(--white);
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, .04);
+}
+
+/*Começo tabela*/
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: .875rem;
+}
+
+thead tr {
+    background: var(--teal-dim);
+}
+
+thead th {
+    padding: .85rem 1rem;
+    font-size: .75rem;
+    font-weight: 600;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    color: var(--teal);
+    border-bottom: 1px solid #c5e2e2;
+    white-space: nowrap;
+}
+
+tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background .12s;
+}
+
+tbody tr:last-child {
+    border-bottom: none;
+}
+
+tbody tr:hover {
+    background: #f0f9f9;
+}
+
+tbody td {
+    padding: .9rem 1rem;
+    vertical-align: middle;
+    color: var(--slate);
+}
+
+.td-id {
+    font-size: .75rem;
+    font-weight: 600;
+    color: var(--muted);
+    width: 48px;
+    text-align: center;
+}
+
+.td-nome {
+    font-weight: 600;
+    color: var(--slate);
+}
+
+.td-coren {
+    font-family: monospace;
+    font-size: .82rem;
+    background: var(--teal-dim);
+    color: var(--teal);
+    padding: .2rem .5rem;
+    border-radius: 5px;
+    display: inline-block;
+    white-space: nowrap;
+}
+
+.td-data {
+    font-size: .82rem;
+    color: var(--muted);
+    white-space: nowrap;
+}
+
+/*Avatar dos enfermeiros*/
+.avatar-wrap {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 2px solid var(--border);
+    flex-shrink: 0;
+    transition: border-color .5s, transform .1s;
+}
+
+.avatar-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.avatar-link {
+    display: inline-flex;
+    text-decoration: none;
+}
+
+.avatar-link:hover .avatar-wrap {
+    border-color: var(--teal);
+    box-shadow: 0 0 0 2px rgba(13, 115, 119, .2);
+}
+
+/*Botões dos enfermeiros*/
+.actions {
+    display: flex;
+    align-items: center;
+    gap: .4rem;
+    flex-wrap: nowrap;
+}
+
+.btn-act {
+    display: inline-flex;
+    align-items: center;
+    gap: .3rem;
+    border: none;
+    border-radius: 6px;
+    padding: .35rem .75rem;
+    font-size: .78rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    transition: opacity .15s, transform .1s;
+    white-space: nowrap;
+}
+
+.btn-act:hover {
+    opacity: .85;
+    transform: translateY(-1px);
+    color: inherit;
+}
+
+.btn-act:active {
+    transform: scale(.96);
+}
+
+.btn-view {
+    background: var(--teal-dim);
+    color: var(--teal);
+}
+
+.btn-edit {
+    background: #fef3c7;
+    color: var(--amber);
+}
+
+.btn-del {
+    background: #fee2e2;
+    color: var(--red);
+}
+
+/*NULL*/
+.empty-state {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--muted);
+}
+
+.empty-state svg {
+    margin-bottom: .75rem;
+    opacity: .35;
+}
+
+.empty-state p {
+    margin: 0;
+    font-size: .9rem;
+}
+
+/*ALERTS*/
+.alert-custom {
+    border-radius: 10px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.25rem;
+    font-size: .875rem;
+    display: flex;
+    gap: .6rem;
+    align-items: flex-start;
+}
+
+.alert-danger-custom {
+    background: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fca5a5;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .toolbar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .search-wrap {
+        max-width: 100%;
+    }
+
+    .btn-add {
+        margin-left: 0;
+    }
+
+    td.hide-mobile {
+        display: none;
+    }
+
+    th.hide-mobile {
+        display: none;
+    }
+}
