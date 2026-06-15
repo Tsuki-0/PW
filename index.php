@@ -3,60 +3,14 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lista de Enfermeiros — Gestão Enfermagem</title>
-    <link rel="icon" type="image/icon" href="img/icon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Enfermeiros — Gestão</title>
+    <link rel="icon" type="image/jpeg" href="img/logo.jpg">
     <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/estiloindex.css">
     <link rel="stylesheet" href="css/estilo.css">
+    <link rel="stylesheet" href="css/estiloindex.css">
+
     <style>
-        /* ── exclusivo: toolbar de busca ── */
-        .toolbar {
-            display: flex;
-            align-items: center;
-            gap: .75rem;
-            flex-wrap: wrap;
-            margin-bottom: 1.5rem;
-        }
-
-        .search-wrap {
-            display: flex;
-            align-items: center;
-            background: var(--white);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 0 .75rem;
-            gap: .5rem;
-            flex: 1;
-            min-width: 220px;
-            max-width: 380px;
-            transition: border-color .15s, box-shadow .15s;
-        }
-
-        .search-wrap:focus-within {
-            border-color: var(--teal);
-            box-shadow: 0 0 0 3px rgba(13,115,119,.12);
-        }
-
-        .search-wrap svg { color: var(--muted); flex-shrink: 0; }
-
-        .search-wrap input {
-            border: none;
-            outline: none;
-            background: transparent;
-            font-size: .875rem;
-            color: var(--slate);
-            width: 100%;
-            padding: .55rem 0;
-        }
-
-        .search-wrap input::placeholder { color: #b0bec5; }
-
-        @media (max-width: 768px) {
-            .toolbar      { flex-direction: column; align-items: stretch; }
-            .search-wrap  { max-width: 100%; }
-            .btn-teal     { justify-content: center; }
-        }
     </style>
 </head>
 
@@ -71,7 +25,7 @@
                 <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
             </svg>
         </span>
-       Gestão de Enfermagem
+        Gestão de Enfermagem
     </a>
     <span class="topbar-sub">Sistema de Gestão</span>
 </nav>
@@ -97,8 +51,8 @@
                 <input type="search" name="filtro" maxlength="50" placeholder="Buscar por nome…"
                     value="<?php echo isset($_POST['filtro']) ? htmlspecialchars($_POST['filtro']) : ''; ?>">
             </div>
-            <button type="submit" class="btn btn-secondary">Pesquisar</button>
-            <a href="incluir.php" class="btn btn-outline-secondary" style="margin-left:auto;">
+            <button type="submit" class="btn-teal">Pesquisar</button>
+            <a href="incluir.php" class="btn-teal" style="margin-left:auto;">
                 <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                     <path d="M12 5v14M5 12h14"/>
                 </svg>
@@ -118,7 +72,9 @@
         // Monta o SELECT com ou sem filtro de busca
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $filtro = $_POST["filtro"];
-            $sql = "SELECT ID, nome, endereço, COREN, datanasc, foto FROM enfermeiros WHERE nome LIKE '%$filtro%' ORDER BY nome";
+            // Proteção básica contra SQL injection (apenas para LIKE)
+            $filtro_escapado = mysqli_real_escape_string($conexao, $filtro);
+            $sql = "SELECT ID, nome, endereço, COREN, datanasc, foto FROM enfermeiros WHERE nome LIKE '%$filtro_escapado%' ORDER BY nome";
         } else {
             $sql = "SELECT ID, nome, endereço, COREN, datanasc, foto FROM enfermeiros ORDER BY ID";
         }
@@ -133,7 +89,7 @@
     </p>
 
     <div class="table-card">
-        <table>
+        <table style="width:100%; border-collapse: collapse;">
             <thead>
                 <tr>
                     <th class="td-id">ID</th>
@@ -145,12 +101,12 @@
                     <th>Ações</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="tabela-corpo">
             <?php if ($total === 0): ?>
                 <!-- Estado vazio: nenhum registro encontrado -->
-                <tr>
+                <tr class="empty-row">
                     <td colspan="7">
-                        <div class="empty-state">
+                        <div class="empty-state" style="text-align:center; padding:2rem;">
                             <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
                                 <circle cx="11" cy="11" r="8"/>
                                 <path d="m21 21-4.35-4.35"/>
@@ -168,7 +124,7 @@
                     // Codifica o ID em base64 para uso seguro na URL
                     $id       = base64_encode($dados['ID']);
                 ?>
-                <tr>
+                <tr class="table-row" data-enfermeiro-id="<?= $id ?>" data-enfermeiro-nome="<?= htmlspecialchars($dados['nome']) ?>">
                     <td class="td-id"><?= $dados['ID'] ?></td>
                     <td class="td-nome"><?= htmlspecialchars($dados['nome']) ?></td>
                     <td class="hide-mobile" style="color:var(--muted);font-size:.82rem;">
@@ -180,11 +136,12 @@
                         <!-- Foto clicável que leva para a ficha do enfermeiro -->
                         <a href="verenfermeiro.php?id=<?= $id ?>" class="avatar-link">
                             <div class="avatar-wrap">
-                                <img src="img/<?= $foto ?>" alt="<?= htmlspecialchars($dados['nome']) ?>" loading="lazy">
+                                <img src="img/<?= $foto ?>" alt="<?= htmlspecialchars($dados['nome']) ?>" loading="lazy" style="width:38px;height:38px;object-fit:cover;border-radius:50%;">
                             </div>
                         </a>
                     </td>
-                    <td>
+                    <td class="actions-cell">
+                        <!-- Ações desktop visíveis apenas em telas maiores -->
                         <div class="actions">
                             <a href="verenfermeiro.php?id=<?= $id ?>" class="btn-act btn-view">
                                 <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -200,7 +157,6 @@
                                 </svg>
                                 Editar
                             </a>
-                            <!-- Botão Apagar abre o modal de confirmação via Bootstrap -->
                             <a href="#" class="btn-act btn-del"
                                 data-bs-toggle="modal"
                                 data-bs-target="#excluirModal"
@@ -214,9 +170,16 @@
                                 Apagar
                             </a>
                         </div>
+                        <!-- Seta indicadora para mobile (visível apenas em telas menores) -->
+                        <div class="dropdown-arrow-icon">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                                <polyline points="6 9 12 15 18 9"/>
+                            </svg>
+                        </div>
                     </td>
                 </tr>
-                <?php endwhile;
+                <?php endwhile; ?>
+                <?php
                     // Exibe tempos de execução como comentário HTML para diagnóstico
                     $t3 = microtime(true);
                     echo "<!-- DIAGNÓSTICO | conexao: " . round(($t1-$t0)*1000) . "ms | query: " . round(($t2-$t1)*1000) . "ms | loop: " . round(($t3-$t2)*1000) . "ms -->";
@@ -243,7 +206,12 @@
 
 <?php include "modal.php"; // Modal de confirmação de exclusão ?>
 <script src="js/bootstrap.bundle.min.js"></script>
-<script src="js/dialogo.js"></script> <!-- Script que popula o modal com o ID correto -->
+<script src="js/dialogo.js"></script>
+<script src="js/dropbuttons.js"></script>
+
+<script>
+
+</script>
 
 </body>
 </html>

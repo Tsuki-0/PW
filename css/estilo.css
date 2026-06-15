@@ -1,4 +1,6 @@
+/* Estilo geral compartilhado entre todas as paginas. Estilos exclusivos ficam no <style> de cada arquivo PHP. */
 
+/* Variaveis de cores e tokens usados em todo o sistema */
 :root {
     --teal:       #0d7377;
     --teal-light: #14a085;
@@ -24,6 +26,7 @@ body {
     min-height: 100vh;
 }
 
+/* Topbar: barra superior fixa presente em todas as paginas */
 .topbar {
     background: var(--white);
     border-bottom: 1px solid var(--border);
@@ -66,6 +69,7 @@ body {
     color: var(--muted);
 }
 
+/* Estrutura da pagina: container principal e cabecalho */
 .page-wrap {
     max-width: 1100px;
     margin: 0 auto;
@@ -96,6 +100,7 @@ body {
     color: var(--muted);
 }
 
+/* Botoes gerais usados em formularios, tabela e telas de resultado */
 .btn-teal {
     display: inline-flex;
     align-items: center;
@@ -159,6 +164,7 @@ body {
 
 .btn-danger:hover { background: #fecaca; color: var(--red); }
 
+/* Botoes de acao da tabela em index.php: Ver, Editar, Apagar */
 .actions {
     display: flex;
     align-items: center;
@@ -188,6 +194,7 @@ body {
 .btn-edit { background: #fef3c7;         color: var(--amber); }
 .btn-del  { background: #fee2e2;         color: var(--red); }
 
+/* Avatar/foto circular usado em index.php e verenfermeiro.php */
 .avatar-wrap {
     width: 44px;
     height: 44px;
@@ -214,6 +221,7 @@ body {
     box-shadow: 0 0 0 2px rgba(13,115,119,.2);
 }
 
+/* Alertas de sucesso e erro usados em incluir.php, editar.php, index.php e verenfermeiro.php */
 .alert-custom {
     border-radius: 10px;
     padding: 1rem 1.25rem;
@@ -241,6 +249,7 @@ body {
     display: inline-block;
 }
 
+/* Card generico: container basico com sombra leve, reutilizavel */
 .card-custom {
     background: var(--white);
     border: 1px solid var(--border);
@@ -249,15 +258,19 @@ body {
     overflow: hidden;
 }
 
+/* Formularios em incluir.php e editar.php: caixa, campos, labels e acoes */
 .form-wrap {
     background: var(--white);
     border: 2px solid var(--teal);
     border-radius: 14px;
-    box-shadow: 0 25px 45px -12px rgba(0,0,0,.35), 0 2px 8px rgba(0,0,0,.08);
+    box-shadow:
+        0 2px 0 rgba(0,0,0,.15),
+        0 4px 0 rgba(0,0,0,.08),
+        0 6px 0 rgba(0,0,0,.04),
+        0 8px 28px rgba(0,0,0,.20);
     padding: 2rem;
     max-width: 680px;
     margin: 0 auto;
-    transition: all .1s ease;
 }
 
 .form-group {
@@ -307,6 +320,7 @@ textarea.form-control-custom {
     border-top: 1px solid var(--border);
 }
 
+/* Tabela de listagem em index.php */
 .table-card {
     background: var(--white);
     border-radius: 12px;
@@ -375,6 +389,7 @@ tbody td {
     white-space: nowrap;
 }
 
+/* Estado vazio exibido em index.php quando a busca nao retorna resultados */
 .empty-state {
     text-align: center;
     padding: 3rem 1rem;
@@ -384,6 +399,7 @@ tbody td {
 .empty-state svg { margin-bottom: .75rem; opacity: .35; }
 .empty-state p   { margin: 0; font-size: .9rem; }
 
+/* Badge generico */
 .badge-info {
     display: inline-flex;
     align-items: center;
@@ -396,6 +412,7 @@ tbody td {
     font-weight: 600;
 }
 
+/* Preview de foto em incluir.php e editar.php */
 .foto-preview {
     width: 160px;
     height: 160px;
@@ -406,12 +423,14 @@ tbody td {
     margin-bottom: .75rem;
 }
 
+/* Divisor de secao em verenfermeiro.php */
 .section-divider {
     border: none;
     border-top: 1px solid var(--border);
     margin: 1.5rem 0;
 }
 
+/* Responsivo: ajustes gerais para telas menores que 768px */
 @media (max-width: 768px) {
     .page-header   { flex-direction: column; align-items: flex-start; }
     .form-wrap     { padding: 1.25rem; }

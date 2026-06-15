@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestão de Enfermagem</title>
-    <link rel="icon" type="image/icon" href="img/icon.png">
+    <title>Ver Enfermeiro — Gestão de Enfermagem</title>
+    <link rel="icon" type="image/jpeg" href="img/logo.jpg">
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/estilo.css">
     <style>
@@ -16,7 +16,7 @@
             border-radius: 16px;
             box-shadow: 0 2px 8px rgba(0,0,0,.06);
             max-width: 560px;
-            min-width: 320px;
+            margin: 0 auto;
             overflow: hidden;
         }
 
@@ -75,7 +75,7 @@
             font-weight: 500;
             color: var(--slate);
         }
-</style>
+    </style>
 </head>
 
 <body>
@@ -97,10 +97,10 @@
 <div class="page-wrap">
 
     <!-- CABEÇALHO DA PÁGINA -->
-    <div class="page-header" style="text-align: center;">
+    <div class="page-header">
         <div>
             <h1>Ficha do Enfermeiro</h1>
-            <h3 style="margin-top: 1%;">Dados completos do cadastro</h3>
+            <p>Dados completos do cadastro</p>
         </div>
     </div>
 
@@ -150,44 +150,50 @@
 
     <!-- Exibe o cartão de perfil apenas se os dados foram carregados com sucesso -->
     <?php if (isset($nome)): ?>
-    <div class="profile-wrapper">
-        <div class="profile-card" style="width: 85%;">
-            <div class="profile-banner"></div>
-            <div class="profile-body">
-                <img src="img/<?= $foto ?>" class="profile-avatar" alt="<?= htmlspecialchars($nome) ?>">
-                <p class="profile-name"><?= htmlspecialchars($nome) ?></p>
-                <span class="td-coren">COREN <?= htmlspecialchars($coren) ?></span>
+    <div class="profile-card">
+        <div class="profile-banner"></div>
+        <div class="profile-body">
+            <img src="img/<?= $foto ?>" class="profile-avatar" alt="<?= htmlspecialchars($nome) ?>">
+            <p class="profile-name"><?= htmlspecialchars($nome) ?></p>
+            <span class="td-coren">COREN <?= htmlspecialchars($coren) ?></span>
 
-                <hr class="section-divider">
+            <hr class="section-divider">
 
-                <!-- Campo: Endereço -->
-                <div class="profile-field">
-                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/>
-                        <circle cx="12" cy="10" r="3"/>
+            <!-- Campo: Endereço -->
+            <div class="profile-field">
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/>
+                    <circle cx="12" cy="10" r="3"/>
+                </svg>
+                <div>
+                    <div class="profile-field-label">Endereço</div>
+                    <div class="profile-field-value"><?= htmlspecialchars($endereco) ?></div>
+                </div>
+            </div>
+
+            <!-- Campo: Data de Nascimento -->
+            <div class="profile-field">
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <rect x="3" y="4" width="18" height="18" rx="2"/>
+                    <line x1="16" y1="2" x2="16" y2="6"/>
+                    <line x1="8" y1="2" x2="8" y2="6"/>
+                    <line x1="3" y1="10" x2="21" y2="10"/>
+                </svg>
+                <div>
+                    <div class="profile-field-label">Data de Nascimento</div>
+                    <div class="profile-field-value"><?= $datanasc ?></div>
+                </div>
+            </div>
+
+            <div class="form-actions" style="margin-top:1.25rem;padding-top:1.25rem;">
+                <a href="editar.php?id=<?= $idEnc ?>" class="btn-teal">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
                     </svg>
-                    <div>
-                        <div class="profile-field-label">Endereço</div>
-                        <div class="profile-field-value"><?= htmlspecialchars($endereco) ?></div>
-                    </div>
-                </div>
-
-                <!-- Campo: Data de Nascimento -->
-                <div class="profile-field">
-                    <div>
-                        <div class="profile-field-label">Data de Nascimento</div>
-                        <div class="profile-field-value"><?= $datanasc ?></div>
-                    </div>
-                </div>
-
-                <div class="form-actions" style="display: flex; gap: 1rem; justify-content: center;">
-                    <a href="editar.php?id=<?= $idEnc?>">
-                       <button type="button" class="btn btn-outline-primary">Editar</button>
-                    </a>
-                    <a href="index.php">
-                        <button type="button" class="btn btn-outline-secondary">Voltar</button>
-                    </a>
-                </div>
+                    Editar
+                </a>
+                <a href="index.php" class="btn-outline">Voltar</a>
             </div>
         </div>
     </div>

@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Excluir Enfermeiro — Gestão de Enfermagem</title>
-    <link rel="icon" type="image/icon" href="img/icon.png">
+    <link rel="icon" type="image/jpeg" href="img/logo.jpg">
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/estilo.css">
     <style>
@@ -105,7 +105,7 @@
             </div>
             <p class="result-title">Excluído com sucesso!</p>
             <p class="result-sub">O enfermeiro foi removido do sistema.</p>
-            <a href="index.php" class="btn btn-outline-secondary" style="display:inline-flex;">
+            <a href="index.php" class="btn-teal" style="display:inline-flex;">
                 <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
                     <path d="M19 12H5M12 5l-7 7 7 7"/>
                 </svg>
@@ -123,7 +123,7 @@
             </div>
             <p class="result-title">Ocorreu um erro</p>
             <p class="result-sub">' . htmlspecialchars($e->getMessage()) . '</p>
-            <a href="index.php" class="btn btn-outline-secondary" style="display:inline-flex;">Voltar</a>';
+            <a href="index.php" class="btn-outline" style="display:inline-flex;">Voltar</a>';
         }
         ?>
     </div>

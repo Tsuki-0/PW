@@ -4,12 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestão de Enfermagem</title>
-    <link rel="icon" type="image/icon" href="img/icon.png">
+    <title>Editar Enfermeiro — Gestão de Enfermagem</title>
+    <link rel="icon" type="image/jpeg" href="img/logo.jpg">
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/estilo.css">
     <style>
-        /* ── exclusivo: área de upload de foto ── */
+        /* Estilo exclusivo desta pagina: area de upload de foto */
         .file-drop {
             border: 2px dashed var(--border);
             border-radius: 10px;
@@ -22,7 +22,7 @@
 
         .file-drop:hover { border-color: var(--teal); background: var(--teal-dim); }
 
-        .file-drop input[type="file"] { display: none; /* input oculto, acionado pelo label */ }
+        .file-drop input[type="file"] { display: none; }
 
         .file-drop label {
             cursor: pointer;
@@ -41,9 +41,7 @@
 <?php
 try {
     include "conexao.php";
-    include "funcoes.php"; // Carrega a função redimensionarImagem()
 
-    // Valida e decodifica o ID recebido pela URL
     if (isset($_GET['id']) && is_numeric(base64_decode($_GET['id']))) {
         $id = base64_decode($_GET['id']);
     } else {
@@ -52,34 +50,29 @@ try {
 
     if ($_SERVER["REQUEST_METHOD"] == "GET") {
 
-        // GET: carrega os dados atuais do banco para preencher o formulário
-        $sql       = "SELECT * FROM enfermeiros WHERE ID = $id";
+        $sql      = "SELECT * FROM enfermeiros WHERE ID = $id";
         $resultado = $conexao->query($sql);
-        $dados     = $resultado->fetch_assoc();
+        $dados    = $resultado->fetch_assoc();
 
         $nome     = $dados['nome'];
         $endereco = $dados['endereço'];
         $coren    = $dados['COREN'];
-        // Formata a data para o formato aceito pelo input type="date"
         $dt       = new DateTime($dados['datanasc'], new DateTimeZone("America/Sao_Paulo"));
-        $datanasc = $dt->format("Y-m-d");
+        $datanasc = $dt->format("d/m/Y");
         $foto     = empty($dados['foto']) ? "SemImagem.png" : $dados['foto'];
 
     } else {
 
-        // POST: recupera os dados do formulário enviado
         $nome     = $_POST['nome'];
         $endereco = $_POST['endereco'];
         $coren    = $_POST['coren'];
         $datanasc = $_POST['datanasc'];
 
-        // Busca a foto atual no banco como fallback caso nenhuma nova seja enviada
-        $sqlFoto   = "SELECT foto FROM enfermeiros WHERE ID = $id";
-        $resFoto   = $conexao->query($sqlFoto);
+        $sqlFoto  = "SELECT foto FROM enfermeiros WHERE ID = $id";
+        $resFoto  = $conexao->query($sqlFoto);
         $dadosFoto = $resFoto->fetch_assoc();
-        $foto      = !empty($dadosFoto['foto']) ? $dadosFoto['foto'] : 'SemImagem.png';
+        $foto     = !empty($dadosFoto['foto']) ? $dadosFoto['foto'] : 'SemImagem.png';
 
-        // Verifica se um novo arquivo foi enviado
         if (isset($_FILES['foto']) && $_FILES['foto']['error'] === UPLOAD_ERR_OK) {
 
             $extensoesPermitidas = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
@@ -89,14 +82,13 @@ try {
                 throw new Exception("Extensão não permitida. Use JPG, PNG, WEBP ou GIF.");
             }
 
-            // Gera nome único para o novo arquivo
             $nomeArquivo = uniqid('enf_', true) . '.' . $extensao;
             $destino     = "img/" . $nomeArquivo;
 
-            // Redimensiona e salva a nova imagem (máx 300px de largura)
-            redimensionarImagem($_FILES['foto']['tmp_name'], $destino, 300);
+            if (!move_uploaded_file($_FILES['foto']['tmp_name'], $destino)) {
+                throw new Exception("Erro ao salvar a imagem!");
+            }
 
-            // Remove a foto antiga do servidor se não for a imagem padrão
             if ($foto !== 'SemImagem.png' && file_exists("img/" . $foto)) {
                 unlink("img/" . $foto);
             }
@@ -104,12 +96,9 @@ try {
             $foto = $nomeArquivo;
 
         } elseif (isset($_FILES['foto']) && $_FILES['foto']['error'] !== UPLOAD_ERR_NO_FILE) {
-            // Houve tentativa de upload mas ocorreu erro técnico
             throw new Exception("Erro ao receber a imagem. Tente novamente.");
         }
-        // Se UPLOAD_ERR_NO_FILE: nenhum arquivo enviado, mantém a foto atual do banco
 
-        // Atualiza o registro no banco de dados
         $sql = "UPDATE enfermeiros SET
                     nome     = '" . htmlspecialchars($nome)     . "',
                     endereço = '" . htmlspecialchars($endereco) . "',
@@ -166,47 +155,46 @@ try {
 
 <div class="page-wrap">
 
-    <!-- CABEÇALHO DA PÁGINA -->
-    <div class="page-header" style="text-align: center;">
+    <div class="page-header">
         <div>
             <h1>Editar Enfermeiro</h1>
-            <h3 style="margin-top: 1%;">Atualize os dados do cadastro</h3>
+            <p>Atualize os dados do cadastro</p>
         </div>
     </div>
 
-    <!-- Exibe o formulário apenas se os dados foram carregados com sucesso -->
     <?php if (isset($nome)): ?>
-    <?php $idEnc = base64_encode($id); // Recodifica o ID para usar na action do form ?>
+    <?php $idEnc = base64_encode($id); ?>
     <div class="form-wrap">
         <form action="editar.php?id=<?= $idEnc ?>" method="post" enctype="multipart/form-data">
 
-            <div class="form-group  col-md-5" style="margin:0 auto; text-align: center;">
+            <div class="form-group">
                 <label class="form-label">Nome completo</label>
-                <input type="text" name="nome" maxlength="50" class="form-control"
+                <input type="text" name="nome" maxlength="50" class="form-control-custom"
                     value="<?= htmlspecialchars($nome) ?>" required>
             </div>
 
-            <div class="form-group  col-md-5" style="margin:0 auto; text-align: center;">
+            <div class="form-group">
                 <label class="form-label">Endereço</label>
-                <input type="text" name="endereco" maxlength="50" class="form-control"
+                <input type="text" name="endereco" maxlength="50" class="form-control-custom"
                     value="<?= htmlspecialchars($endereco) ?>" required>
             </div>
 
-            <div class="form-group col-md-2" style="margin:0 auto; text-align: center;">
+            <div class="form-group">
                 <label class="form-label">COREN</label>
-                <input type="number" name="coren" class="form-control"
+                <input type="number" name="coren" class="form-control-custom"
                     value="<?= $coren ?>" required>
             </div>
 
-            <div class="form-group col-md-3" style="margin:0 auto; text-align: center;">
+            <div class="form-group">
                 <label class="form-label">Data de Nascimento</label>
-                <input type="date" name="datanasc" class="form-control"
+                <input type="text" name="datanasc" id="datanasc" class="form-control-custom"
+                    placeholder="dd/mm/aaaa" inputmode="numeric" maxlength="10"
+                    pattern="\d{2}/\d{2}/\d{4}"
                     value="<?= $datanasc ?>">
             </div>
 
-            <div class="form-group" style="margin:0 auto; text-align: center;">
+            <div class="form-group">
                 <label class="form-label">Nova Foto <small style="color:var(--muted);font-weight:400;">(deixe vazio para manter a atual)</small></label>
-                <!-- Área de upload estilizada — o input real fica oculto -->
                 <div class="file-drop">
                     <label for="imagemnova">
                         <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
@@ -221,14 +209,13 @@ try {
                 </div>
             </div>
 
-            <div class="form-group" style="margin:0 auto; text-align: center;">
+            <div class="form-group">
                 <label class="form-label">Foto atual</label>
-                <!-- Pré-visualização atualizada via JS ao selecionar nova foto -->
-                <img src="img/<?= $foto ?>" id="preview" class="foto-preview" alt="foto atual" style="width: 25%; height: 25%;">
+                <img src="img/<?= $foto ?>" id="preview" class="foto-preview" alt="foto atual">
             </div>
 
-            <div class="form-actions" style="display: flex; gap: 1rem; justify-content: center;">
-                <button type="submit" class="btn btn-outline-success">
+            <div class="form-actions">
+                <button type="submit" class="btn-teal">
                     <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                         <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
                         <polyline points="17 21 17 13 7 13 7 21"/>
@@ -236,8 +223,8 @@ try {
                     </svg>
                     Salvar alterações
                 </button>
-                <button type="reset" class="btn btn-outline-danger">Desfazer</button>
-                <a href="index.php" class="btn btn-outline-dark">Cancelar</a>
+                <button type="reset" class="btn-outline">Desfazer</button>
+                <a href="index.php" class="btn-outline">Cancelar</a>
             </div>
 
         </form>
@@ -247,13 +234,58 @@ try {
 </div>
 
 <script>
-    // Atualiza a pré-visualização ao selecionar uma nova imagem
     document.getElementById('imagemnova').addEventListener('change', function (e) {
         const file = e.target.files[0];
         if (!file) return;
         const reader = new FileReader();
         reader.onload = ev => document.getElementById('preview').src = ev.target.result;
         reader.readAsDataURL(file);
+    });
+
+    /* Mascara o campo de data no formato dd/mm/aaaa enquanto o usuario digita */
+    const campoData = document.getElementById('datanasc');
+
+    campoData.addEventListener('input', function (e) {
+        let v = e.target.value.replace(/\D/g, '').slice(0, 8);
+        if (v.length >= 5) {
+            v = v.slice(0, 2) + '/' + v.slice(2, 4) + '/' + v.slice(4);
+        } else if (v.length >= 3) {
+            v = v.slice(0, 2) + '/' + v.slice(2);
+        }
+        e.target.value = v;
+    });
+
+    /* Valida se a data digitada esta entre 01/01/1920 e 14/06/2026 */
+    campoData.addEventListener('blur', function (e) {
+        const valor = e.target.value;
+        const match = valor.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+
+        if (!match) {
+            e.target.setCustomValidity('Digite a data no formato dd/mm/aaaa.');
+            e.target.reportValidity();
+            return;
+        }
+
+        const [, dia, mes, ano] = match;
+        const data = new Date(`${ano}-${mes}-${dia}`);
+        const min  = new Date('1920-01-01');
+        const max  = new Date('2026-06-14');
+
+        if (data < min || data > max || data.getMonth() + 1 != parseInt(mes)) {
+            e.target.setCustomValidity('Data deve estar entre 01/01/1920 e 14/06/2026.');
+        } else {
+            e.target.setCustomValidity('');
+        }
+        e.target.reportValidity();
+    });
+
+    /* Converte dd/mm/aaaa para aaaa-mm-dd antes de enviar o formulario */
+    document.querySelector('form').addEventListener('submit', function () {
+        const match = campoData.value.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+        if (match) {
+            const [, dia, mes, ano] = match;
+            campoData.value = `${ano}-${mes}-${dia}`;
+        }
     });
 </script>
 

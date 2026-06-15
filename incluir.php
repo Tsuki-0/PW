@@ -4,12 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Adicionar Enfermeiro — Gestão de Enfermagem</title>
-    <link rel="icon" type="image/icon" href="img/icon.png">
+    <title>Incluir Enfermeiro — Gestão de Enfermagem</title>
+    <link rel="icon" type="image/jpeg" href="img/logo.jpg">
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/estilo.css">
     <style>
-        /* ── exclusivo: área de upload de foto ── */
+        /* Estilo exclusivo desta pagina: area de upload de foto */
         .file-drop {
             border: 2px dashed var(--border);
             border-radius: 10px;
@@ -26,7 +26,7 @@
         }
 
         .file-drop input[type="file"] {
-            display: none; /* input oculto, acionado pelo label */
+            display: none;
         }
 
         .file-drop label {
@@ -44,24 +44,19 @@
 </head>
 
 <?php
-// Processa o formulário somente quando enviado via POST
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     try {
         include "conexao.php";
-        include "funcoes.php"; // Carrega a função redimensionarImagem()
 
-        // Recupera os dados do formulário
         $nome     = $_POST['nome'];
         $endereco = $_POST['endereco'];
         $coren    = $_POST['coren'];
         $datanasc = $_POST['datanasc'];
 
-        // Verifica se o upload foi recebido sem erros
         if (!isset($_FILES['foto']) || $_FILES['foto']['error'] !== UPLOAD_ERR_OK) {
             throw new Exception("Erro ao receber a imagem. Tente novamente.");
         }
 
-        // Valida a extensão do arquivo
         $extensoesPermitidas = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
         $extensao = strtolower(pathinfo($_FILES["foto"]["name"], PATHINFO_EXTENSION));
 
@@ -69,14 +64,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             throw new Exception("Extensão não permitida. Use JPG, PNG, WEBP ou GIF.");
         }
 
-        // Gera um nome único para evitar conflitos de arquivo
         $arquivo = uniqid('enf_', true) . '.' . $extensao;
         $destino = "img/" . $arquivo;
 
-        // Redimensiona e salva a imagem (máx 300px de largura)
-        redimensionarImagem($_FILES["foto"]["tmp_name"], $destino, 300);
+        if (!move_uploaded_file($_FILES["foto"]["tmp_name"], $destino)) {
+            throw new Exception("Erro ao salvar a imagem!");
+        }
 
-        // Insere o registro no banco de dados
         $sql = "INSERT INTO enfermeiros (nome, endereço, COREN, datanasc, foto)
                 VALUES ('$nome', '$endereco', '$coren', '$datanasc', '$arquivo')";
         $conexao->query($sql);
@@ -112,7 +106,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <body>
 
-<!-- TOPBAR -->
 <nav class="topbar">
     <a href="index.php" class="topbar-brand">
         <span class="icon-wrap">
@@ -128,65 +121,64 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <div class="page-wrap">
 
-    <!-- CABEÇALHO DA PÁGINA -->
-    <div class="page-header" style="text-align: center;">
-        <div style="text-align: center;">
-            <h1>Novo Enfermeiro</h1>
+    <div class="page-header">
+        <div>
+            <h1>Adicionar Enfermeiro</h1>
             <p>Preencha os dados para cadastrar um novo membro na equipe</p>
         </div>
     </div>
 
-    <!-- FORMULÁRIO DE CADASTRO -->
-    <div class="form-wrap col-mb-6" style="text-align: center;">
+    <div class="form-wrap">
         <form action="incluir.php" method="post" enctype="multipart/form-data">
 
-            <div class="form-group col-sm-7 col-md-3" style="margin:0 auto; text-align: center;">
+            <div class="form-group">
                 <label class="form-label">Nome completo</label>
-                <input class="form-control" type="text" name="nome" placeholder="Ex: Ana Maria Santos" required>
+                <input type="text" name="nome" maxlength="50" class="form-control-custom"
+                    placeholder="Ex: Ana Maria Santos" required>
             </div>
 
-            <div class="form-group col-sm-7 col-md-3" style="margin:0 auto; text-align: center;">
+            <div class="form-group">
                 <label class="form-label">Endereço</label>
-               
-                 <input class="form-control col-sm-7" type="text" name="endereco"
-                    placeholder="Ex: Rua das Flores, 123 - Bairro Jardim" required>
+                <input type="text" name="endereco" maxlength="50" class="form-control-custom"
+                    placeholder="Ex: Rua das Flores, 123 — São Paulo/SP" required>
             </div>
 
-            <div class="form-group col-sm-7 col-md-2" style="margin:0 auto; text-align: center;">
+            <div class="form-group">
                 <label class="form-label">COREN</label>
-                <input type="number" name="coren" class="form-control"
+                <input type="number" name="coren" class="form-control-custom"
                     placeholder="Ex: 123456" required>
             </div>
 
-            <div class="form-group col-sm-7 col-md-2" style="margin:0 auto; text-align: center;">
+            <div class="form-group">
                 <label class="form-label">Data de Nascimento</label>
-                <input type="date" name="datanasc" class="form-control" required>
+                <input type="text" name="datanasc" id="datanasc" class="form-control-custom"
+                    placeholder="dd/mm/aaaa" inputmode="numeric" min="01-01-1900" max="14-06-2026" maxlength="10"
+                    pattern="\d{2}/\d{2}/\d{4}" required>
             </div>
 
-            <div class="form-group col-sm-7 col-md-5" style="margin:0 auto; text-align: center;">
+            <div class="form-group">
                 <label class="form-label">Foto</label>
-                <!-- Área de upload estilizada — o input real fica oculto -->
                 <div class="file-drop">
                     <label for="imagemnova">
-                        <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                        <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
                             <rect x="3" y="3" width="18" height="18" rx="2"/>
                             <circle cx="8.5" cy="8.5" r="1.5"/>
                             <polyline points="21 15 16 10 5 21"/>
                         </svg>
                         <span>Clique para selecionar</span>
-                        JPG, PNG, WEBP ou JPEG · máx. recomendado 5MB
+                        JPG, PNG, WEBP ou GIF · máx. recomendado 5MB
                     </label>
                     <input type="file" name="foto" id="imagemnova" accept="image/*" required>
                 </div>
             </div>
 
-            <div class="form-group" style="text-align: center;">
+            <div class="form-group">
                 <label class="form-label">Pré-visualização</label>
                 <img src="img/SemImagem.png" id="preview" class="foto-preview" alt="pré-visualização">
             </div>
 
             <div class="form-actions">
-                <button type="submit" class="btn btn-outline-primary">
+                <button type="submit" class="btn-teal">
                     <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                         <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
                         <polyline points="17 21 17 13 7 13 7 21"/>
@@ -194,8 +186,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     </svg>
                     Salvar
                 </button>
-                <button type="reset" class="btn btn-outline-secondary">Limpar</button>
-                <a href="index.php" class="btn btn-outline-danger">Cancelar</a>
+                <button type="reset" class="btn-outline">Limpar</button>
+                <a href="index.php" class="btn-outline">Cancelar</a>
             </div>
 
         </form>
@@ -203,13 +195,58 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </div>
 
 <script>
-    // Atualiza a pré-visualização ao selecionar uma nova imagem
     document.getElementById('imagemnova').addEventListener('change', function (e) {
         const file = e.target.files[0];
         if (!file) return;
         const reader = new FileReader();
         reader.onload = ev => document.getElementById('preview').src = ev.target.result;
         reader.readAsDataURL(file);
+    });
+
+    /* Mascara o campo de data no formato dd/mm/aaaa enquanto o usuario digita */
+    const campoData = document.getElementById('datanasc');
+
+    campoData.addEventListener('input', function (e) {
+        let v = e.target.value.replace(/\D/g, '').slice(0, 8);
+        if (v.length >= 5) {
+            v = v.slice(0, 2) + '/' + v.slice(2, 4) + '/' + v.slice(4);
+        } else if (v.length >= 3) {
+            v = v.slice(0, 2) + '/' + v.slice(2);
+        }
+        e.target.value = v;
+    });
+
+    /* Valida se a data digitada esta entre 01/01/1920 e 14/06/2026 */
+    campoData.addEventListener('blur', function (e) {
+        const valor = e.target.value;
+        const match = valor.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+
+        if (!match) {
+            e.target.setCustomValidity('Digite a data no formato dd/mm/aaaa.');
+            e.target.reportValidity();
+            return;
+        }
+
+        const [, dia, mes, ano] = match;
+        const data = new Date(`${ano}-${mes}-${dia}`);
+        const min  = new Date('1920-01-01');
+        const max  = new Date('2026-06-14');
+
+        if (data < min || data > max || data.getMonth() + 1 != parseInt(mes)) {
+            e.target.setCustomValidity('Data deve estar entre 01/01/1920 e 14/06/2026.');
+        } else {
+            e.target.setCustomValidity('');
+        }
+        e.target.reportValidity();
+    });
+
+    /* Converte dd/mm/aaaa para aaaa-mm-dd antes de enviar o formulario */
+    document.querySelector('form').addEventListener('submit', function () {
+        const match = campoData.value.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+        if (match) {
+            const [, dia, mes, ano] = match;
+            campoData.value = `${ano}-${mes}-${dia}`;
+        }
     });
 </script>
 
