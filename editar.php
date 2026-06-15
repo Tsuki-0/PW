@@ -109,8 +109,8 @@ try {
 
         $conexao->query($sql);
 
-        echo '
-        <div class="alert-custom alert-success-custom" style="max-width:680px;margin:2rem auto 0;">
+        $mensagem = '
+        <div class="alert-custom alert-success-custom">
             <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
                 <polyline points="22 4 12 14.01 9 11.01"/>
@@ -123,8 +123,8 @@ try {
     }
 
 } catch (Exception $e) {
-    echo '
-    <div class="alert-custom alert-danger-custom" style="max-width:680px;margin:2rem auto 0;">
+    $mensagem = '
+    <div class="alert-custom alert-danger-custom">
         <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <circle cx="12" cy="12" r="10"/>
             <line x1="12" y1="8" x2="12" y2="12"/>
@@ -161,6 +161,8 @@ try {
             <p>Atualize os dados do cadastro</p>
         </div>
     </div>
+
+    <?php if (!empty($mensagem)) echo '<div style="max-width:680px;margin:0 auto 1.25rem;">' . $mensagem . '</div>'; ?>
 
     <?php if (isset($nome)): ?>
     <?php $idEnc = base64_encode($id); ?>
