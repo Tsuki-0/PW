@@ -65,9 +65,7 @@
     <?php
     try {
         // Marcadores de tempo para diagnóstico de performance
-        $t0 = microtime(true);
         include "conexao.php";
-        $t1 = microtime(true);
 
         // Monta o SELECT com ou sem filtro de busca
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -80,7 +78,6 @@
         }
 
         $query = $conexao->query($sql);
-        $t2    = microtime(true);
         $total = $query->num_rows;
     ?>
 
