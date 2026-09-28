@@ -63,13 +63,13 @@
             </div>
         </form>
 
-        <!-- TABELA DE ENFERMEIROS -->
-        <?php
-        try {
-            // Marcadores de tempo para diagnóstico de performance
-            $t0 = microtime(true);
-            include "conexao.php";
-            $t1 = microtime(true);
+    <!-- TABELA DE ENFERMEIROS -->
+    <?php
+    try {
+        // Marcadores de tempo para diagnóstico de performance
+        $t0 = microtime(true);
+        include "conexao.php";
+        $t1 = microtime(true);
 
             // Monta o SELECT com ou sem filtro de busca
             if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -81,10 +81,10 @@
                 $sql = "SELECT ID, nome, endereço, COREN, datanasc, foto FROM enfermeiros ORDER BY ID";
             }
 
-            $query = $conexao->query($sql);
-            $t2 = microtime(true);
-            $total = $query->num_rows;
-            ?>
+        $query = $conexao->query($sql);
+        $t2    = microtime(true);
+        $total = $query->num_rows;
+    ?>
 
             <p style="font-size:.8rem;color:var(--muted);margin-bottom:.75rem;">
                 <?= $total ?> registro<?= $total !== 1 ? 's' : '' ?> encontrado<?= $total !== 1 ? 's' : '' ?>
